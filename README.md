@@ -8,9 +8,10 @@
  
 ![](m5temp.gif)
 
-##To upload to M5Stick 
+## To build and upload into M5Stick 
  1. Download PlatformIO on your visual studio code 
- 2. Please refer to the image below
+ 2. For reference M5Stick please refer to <b>platformio.ini</b> file 
+ 3. Please refer to the image below
 
 Build and upload to M5Stick
  ![](platformio-build-tempsensor.gif)
