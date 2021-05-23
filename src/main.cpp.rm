@@ -59,21 +59,26 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     {
       if (advertisedDevice->haveName())
       {
+        Serial.println("");
+        Serial.print("Device name: ");
+        Serial.println(advertisedDevice->getName().c_str()); 
+        Serial.print(" - ");  
+        Serial.print(advertisedDevice->getRSSI());
         if(advertisedDevice->getName().find("ATC_") != std::string::npos)
         {
-          Serial.println("");
+          //Serial.println("");
           M5.Lcd.setTextSize(2);
           M5.Lcd.setTextColor(RED);
           M5.Lcd.println("");          
-          Serial.print("Device name: ");
+          //Serial.print("Device name: ");
           M5.Lcd.println(room(advertisedDevice->getName().c_str()));
-          Serial.println(advertisedDevice->getName().c_str());        
-          Serial.print("RSSI:");
-          Serial.println(advertisedDevice->getRSSI());
+          //Serial.println(advertisedDevice->getName().c_str());        
+          //Serial.print("RSSI:");
+          //Serial.println(advertisedDevice->getRSSI());
 
           BLEUUID devUUID = advertisedDevice->getServiceDataUUID();
-          Serial.print("Found Service Data UUID: ");
-          Serial.println(devUUID.toString().c_str());          
+          //Serial.print("Found Service Data UUID: ");
+          //Serial.println(devUUID.toString().c_str());          
           
           std::string serviceData = advertisedDevice->getServiceData(devUUID);
           char buffer [30];
@@ -81,51 +86,54 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
 
           for (int idx = 0; idx < serviceData.length(); idx++)
           {
-            Serial.printf("[%02X]", serviceData[idx]);
+            //Serial.printf("0x%02X ", serviceData[idx]);
+            //Serial.printf("[%02X]", serviceData[idx]);
             int loc = idx *2;
             sprintf(&buffer[loc], "%02X", serviceData[idx]);
+            // sprintf(buffer+strlen[buffer], "%02X", serviceData[idx]);
+            // Serial.print(serviceData[idx]);
           }
-          Serial.println("");
-          Serial.print("Buffer : ");
-          Serial.print(buffer);
+          //Serial.println("");
+          //Serial.print("Buffer : ");
+          //Serial.print(buffer);
 
-          Serial.println("");
+          //Serial.println("");
           memcpy(tempbuffer, buffer+12, 4); 
           int d = strtol(tempbuffer, NULL, 16);
           float temperature = (float)d / (float)10;
           M5.Lcd.setTextColor(LIGHTGREY);
           M5.Lcd.println("Temprature");
-          Serial.print("Temprature : ");
+          //Serial.print("Temprature : ");
           M5.Lcd.setTextSize(3);
           M5.Lcd.setTextColor(GREEN);
           M5.Lcd.println(temperature);
-          Serial.print(temperature);
+          //Serial.print(temperature);
 
           memset(tempbuffer, 0, sizeof(tempbuffer));
 
-          Serial.println("");
+          //Serial.println("");
           memcpy(tempbuffer, buffer+16, 2);
           d = strtol(tempbuffer, NULL, 16);
           float humidity = (float)d;
           M5.Lcd.setTextSize(2);
           M5.Lcd.setTextColor(LIGHTGREY);
           M5.Lcd.println("Humidity");
-          Serial.print("Humidity : ");
-          Serial.print(humidity);
+          //Serial.print("Humidity : ");
+          //Serial.print(humidity);
           M5.Lcd.setTextSize(3);
           M5.Lcd.setTextColor(ORANGE);
           M5.Lcd.print(humidity);
           M5.Lcd.println("");
 
-          Serial.println("");
+          //Serial.println("");
           std::string strManufacturerData = advertisedDevice->getManufacturerData();
           uint8_t cManufacturerData[100];
-          Serial.printf("Device strManufacturerData: %d ", strManufacturerData.length());
+          //Serial.printf("Device strManufacturerData: %d ", strManufacturerData.length());
             for (int i = 0; i < strManufacturerData.length(); i++)
             {
-              Serial.printf("[%X]", cManufacturerData[i]);
+              //Serial.printf("[%X]", cManufacturerData[i]);
             }
-          Serial.printf("\n");
+          //Serial.printf("\n");
         }
 
       }
@@ -154,8 +162,8 @@ void setup()
   pBLEScan = BLEDevice::getScan(); //create new scan
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
   pBLEScan->setActiveScan(true); //active scan uses more power, but get results faster
-  pBLEScan->setInterval(100);
-  pBLEScan->setWindow(99); // less or equal setInterval value
+  pBLEScan->setInterval(2000);
+  pBLEScan->setWindow(1000); // less or equal setInterval value
 }
 
 void loop()
